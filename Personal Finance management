@@ -1,0 +1,122 @@
+import java.util.*;
+
+class Transaction {
+    String type;
+    double amount;
+    String description;
+
+    public Transaction(String type, double amount, String description) {
+        this.type = type;
+        this.amount = amount;
+        this.description = description;
+    }
+}
+
+class User {
+    String username;
+    String password;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+}
+
+public class FinancialManager {
+    private static double income = 0;
+    private static double expenses = 0;
+    private static double savings = 0;
+    private static ArrayList<Transaction> transactions = new ArrayList<>();
+    private static User user = null;
+    
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Welcome to Personal Financial Manager!");
+        signUp(scanner);
+        
+        int choice;
+        do {
+            System.out.println("\n1. Add Income");
+            System.out.println("2. Add Expense");
+            System.out.println("3. View Summary");
+            System.out.println("4. View Transaction History");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+            
+            switch (choice) {
+                case 1:
+                    addIncome(scanner);
+                    break;
+                case 2:
+                    addExpense(scanner);
+                    break;
+                case 3:
+                    viewSummary();
+                    break;
+                case 4:
+                    viewTransactions();
+                    break;
+                case 5:
+                    System.out.println("Exiting program...");
+                    break;
+                default:
+                    System.out.println("Invalid choice! Please try again.");
+            }
+        } while (choice != 5);
+        
+        scanner.close();
+    }
+    
+    private static void signUp(Scanner scanner) {
+        System.out.print("Enter a username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter a password: ");
+        String password = scanner.nextLine();
+        user = new User(username, password);
+        System.out.println("Sign-up successful! Welcome, " + username + "!");
+    }
+    
+    private static void addIncome(Scanner scanner) {
+        System.out.print("Enter income amount: ");
+        double amount = scanner.nextDouble();
+        scanner.nextLine();
+        System.out.print("Enter description: ");
+        String description = scanner.nextLine();
+        income += amount;
+        savings += amount;
+        transactions.add(new Transaction("Income", amount, description));
+        System.out.println("Income recorded successfully!");
+    }
+    
+    private static void addExpense(Scanner scanner) {
+        System.out.print("Enter expense amount: ");
+        double amount = scanner.nextDouble();
+        scanner.nextLine();
+        if (amount > savings) {
+            System.out.println("Insufficient savings to cover this expense!");
+            return;
+        }
+        System.out.print("Enter description: ");
+        String description = scanner.nextLine();
+        expenses += amount;
+        savings -= amount;
+        transactions.add(new Transaction("Expense", amount, description));
+        System.out.println("Expense recorded successfully!");
+    }
+    
+    private static void viewSummary() {
+        System.out.println("\nFinancial Summary:");
+        System.out.println("Total Income: $" + income);
+        System.out.println("Total Expenses: $" + expenses);
+        System.out.println("Current Savings: $" + savings);
+    }
+    
+    private static void viewTransactions() {
+        System.out.println("\nTransaction History:");
+        for (Transaction t : transactions) {
+            System.out.println(t.type + " - $" + t.amount + " : " + t.description);
+        }
+    }
+}
